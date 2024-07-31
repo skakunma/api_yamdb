@@ -1,12 +1,11 @@
 from django.db import models
 
+from .constants import LENGTH_LIMIT, MAX_LENGTH
 from users.models import User
-
-LENGTH_LIMIT = 50
 
 
 class Category(models.Model):
-    name = models.CharField('Название', max_length=256)
+    name = models.CharField('Название', max_length=MAX_LENGTH)
     slug = models.SlugField('slug', max_length=50, unique=True)
 
     def __str__(self):
@@ -14,7 +13,7 @@ class Category(models.Model):
 
 
 class Genre(models.Model):
-    name = models.CharField('Название', max_length=256)
+    name = models.CharField('Название', max_length=MAX_LENGTH)
     slug = models.SlugField('slug', max_length=50, unique=True)
 
     def __str__(self):
@@ -22,7 +21,7 @@ class Genre(models.Model):
 
 
 class Title(models.Model):
-    name = models.CharField('Название', max_length=256)
+    name = models.CharField('Название', max_length=MAX_LENGTH)
     year = models.IntegerField('Год',)
     description = models.TextField('Описание', blank=True)
     genre = models.ManyToManyField(

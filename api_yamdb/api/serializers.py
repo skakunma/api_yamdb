@@ -1,9 +1,7 @@
 from rest_framework import serializers
 
 from reviews.models import Category, Comment, Genre, Review, Title
-
-MIN_SCORE = 1
-MAX_SCORE = 10
+from reviews.constants import MIN_SCORE, MAX_SCORE
 
 
 class CategorySerializer(serializers.ModelSerializer):
