@@ -1,8 +1,9 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import permissions, viewsets
+from rest_framework import viewsets
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from api.permissions import AuthorPermission
+from api.permissions import ThisAuthorOrReadOnly
 from api.serializers import (
     CommentSerializer,
     ReviewSerializer,
@@ -13,20 +14,19 @@ from reviews.models import Review, Title
 class ReviewViewSet(viewsets.ModelViewSet):
     """
     Класс ReviewViewSet.
-
     Класс ReviewViewSet описывает API-представление отзывов.
     Предоставляет следующие запросы: GET, POST,
-    PUT, PATCH, DELETE.
+    PATCH, DELETE.
     """
 
     serializer_class = ReviewSerializer
-    permission_classes = [AuthorPermission]
+    permission_classes = [IsAuthenticatedOrReadOnly, ThisAuthorOrReadOnly]
     pagination_class = LimitOffsetPagination
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_title(self):
         """
         Метод get_title.
-
         Метод get_title возвращает объект
         отдельного произведения.
         """
@@ -38,7 +38,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """
         Метод get_queryset.
-
         Метод get_queryset описывает получение набора
         объектов/одного объекта модели.
         """
@@ -47,7 +46,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """
         Метод perform_create.
-
         Метод perform_create описывает создание новых
         объектов модели.
         """
@@ -60,20 +58,19 @@ class ReviewViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     """
     Класс CommentViewSet.
-
     Класс CommentViewSet описывает API-представление комментариев.
     Предоставляет следующие запросы: GET, POST,
-    PUT, PATCH, DELETE.
+    PATCH, DELETE.
     """
 
     serializer_class = CommentSerializer
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = [IsAuthenticatedOrReadOnly, ThisAuthorOrReadOnly]
     pagination_class = LimitOffsetPagination
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_review(self):
         """
         Метод get_title.
-
         Метод get_title возвращает объект
         отдельного произведения.
         """
@@ -85,7 +82,6 @@ class CommentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """
         Метод get_queryset.
-
         Метод get_queryset описывает получение набора
         объектов/одного объекта модели.
         """
@@ -94,7 +90,6 @@ class CommentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """
         Метод perform_create.
-
         Метод perform_create описывает создание новых
         объектов модели.
         """
