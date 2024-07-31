@@ -118,3 +118,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = '/tmp/django_emails'
 
 APPEND_SLASH=False
+
+AUTH_USER_MODEL = 'users.User'
