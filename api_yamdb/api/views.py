@@ -4,8 +4,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, viewsets
 from rest_framework.pagination import (LimitOffsetPagination,
                                        PageNumberPagination)
+from rest_framework.permissions import (IsAuthenticatedOrReadOnly)
 
 from .mixins import ListCreateDestroyMixin
+from .permissions import ThisAuthorOrReadOnly
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, ReviewSerializer,
                           TitleCreateSerializer, TitleReadOnlySerializer)
@@ -48,12 +50,13 @@ class ReviewViewSet(viewsets.ModelViewSet):
     Класс ReviewViewSet.
     Класс ReviewViewSet описывает API-представление отзывов.
     Предоставляет следующие запросы: GET, POST,
-    PUT, PATCH, DELETE.
+    PATCH, DELETE.
     """
 
     serializer_class = ReviewSerializer
-    # permission_classes = [AuthorPermission]
+    permission_classes = [IsAuthenticatedOrReadOnly, ThisAuthorOrReadOnly]
     pagination_class = LimitOffsetPagination
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_title(self):
         """
@@ -91,12 +94,13 @@ class CommentViewSet(viewsets.ModelViewSet):
     Класс CommentViewSet.
     Класс CommentViewSet описывает API-представление комментариев.
     Предоставляет следующие запросы: GET, POST,
-    PUT, PATCH, DELETE.
+    PATCH, DELETE.
     """
 
     serializer_class = CommentSerializer
-    # permission_classes = (permissions.AllowAny,)
+    permission_classes = [IsAuthenticatedOrReadOnly, ThisAuthorOrReadOnly]
     pagination_class = LimitOffsetPagination
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_review(self):
         """
