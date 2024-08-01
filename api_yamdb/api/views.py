@@ -6,6 +6,7 @@ from rest_framework.pagination import (LimitOffsetPagination,
                                        PageNumberPagination)
 from rest_framework.permissions import (IsAuthenticatedOrReadOnly,)
 
+from .filters import TitleFilter
 from .mixins import ListCreateDestroyMixin
 from .permissions import ThisAuthorOrReadOnly, AdminOrReadOnly
 from .serializers import (CategorySerializer, CommentSerializer,
@@ -37,7 +38,7 @@ class GenreViewSet(ListCreateDestroyMixin):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all().annotate(rating=Avg('reviews__score'))
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('category__slug', 'genre__slug', 'name', 'year',)
+    filterset_class = TitleFilter
     pagination_class = PageNumberPagination
     http_method_names = ['get', 'post', 'patch', 'delete']
     permission_classes = [AdminOrReadOnly, ]
