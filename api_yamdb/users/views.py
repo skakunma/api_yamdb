@@ -1,13 +1,14 @@
 from rest_framework import generics, status
 from .models import User
 from rest_framework.response import Response
-from .serializers import UserSignUpSerializer, UserSignInSerializer, UserListSerializer
+from .serializers import UserSignUpSerializer, UserSignInSerializer, UserListSerializer, UserCreateSerializer
 from .utils import generate_verification_code, send_verification_email
 from rest_framework.permissions import AllowAny
 from .permissions import IsAdminUser
 from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.tokens import AccessToken
 from django.core.mail import send_mail
+from rest_framework.permissions import IsAuthenticated
 
 
 class SignUp(generics.CreateAPIView):
@@ -65,26 +66,64 @@ class SignIn(generics.CreateAPIView):
             user = get_object_or_404(User, username=request.data.get('username'))
             if user.confirmation_code == request.data.get('confirmation_code'):
                 access_token = AccessToken.for_user(user)
-                
                 return Response({
                     'token': str(access_token),
                 }, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class ListUsers(generics.CreateAPIView):
+class ListUsers(generics.ListAPIView):
     model = User
+    serializer_class = UserCreateSerializer
     permission_classes = [
         IsAdminUser,
     ]
-    serializer_class = UserListSerializer
-
     def get_queryset(self):
         return User.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-class DetaliUsers(generics.CreateAPIView):
-    model = User
-    permission_classes = [
-        IsAdminUser,
-    ]
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
     serializer_class = UserListSerializer
+    permission_classes = [IsAdminUser, ]
+    lookup_field = 'username'
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return Response({"detail": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def delete(self, request, *args, **kwargs):
+        return super().destroy(request, *args, **kwargs)
+
+
+class UsersMe(generics.RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+    def get(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = self.get_serializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request, *args, **kwargs):
+        request_data = request.data.copy()
+        request_data.pop('role', None)
+
+        user = self.get_object()
+        serializer = self.get_serializer(user, data=request_data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()  # Сохранение изменений
+        return Response(serializer.data, status=status.HTTP_200_OK)
+

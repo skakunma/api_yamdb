@@ -18,3 +18,9 @@ class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         exclude = ('id', 'confirmation_code', 'password')
+
+class UserCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("email", "username", "role", "first_name", "last_name", "bio")
+

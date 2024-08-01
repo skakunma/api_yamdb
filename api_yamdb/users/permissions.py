@@ -9,6 +9,5 @@ class IsAdminUser(BasePermission):
         # Проверка, аутентифицирован ли пользователь
         if not request.user or not request.user.is_authenticated:
             return False
-        
-        # Проверка, является ли роль пользователя 'admin'
-        return request.user.role == 'admin'
+
+        return request.user.role == 'admin' or request.user.is_superuser

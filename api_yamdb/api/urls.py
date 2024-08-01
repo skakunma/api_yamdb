@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (CategoryViewSet, CommentViewSet,
                     GenreViewSet, ReviewViewSet, TitleViewSet)
-from users.views import SignUp, SignIn, ListUsers, DetaliUsers
+from users.views import SignUp, SignIn, ListUsers, UserDetail, UsersMe
 
 router = DefaultRouter()
 router.register('titles', TitleViewSet, basename='titles')
@@ -23,8 +23,9 @@ router.register(
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('auth/signup/', SignUp.as_view()),
-    path('auth/token/', SignIn.as_view()),
-    path('users/', ListUsers.as_view()),
-    path('users/<str:username>/', DetaliUsers.as_view())
+    path('auth/signup/', SignUp.as_view(), name='signup'),
+    path('auth/token/', SignIn.as_view(), name='token'),
+    path('users/', ListUsers.as_view(), name='list-users'),
+    path('users/me/', UsersMe.as_view(), name='user-me'),
+    path('users/<str:username>/', UserDetail.as_view(), name='user-detail'),
 ]

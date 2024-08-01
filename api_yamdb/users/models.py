@@ -37,9 +37,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=150, blank=True)
     bio = models.TextField(blank=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='user')
-    confirmation_code = models.CharField(max_length=6, blank=True, null=False)
-    is_active = models.BooleanField(default=True)  # Add this field
-    is_staff = models.BooleanField(default=False)   # Add this field
+    confirmation_code = models.CharField(max_length=6, blank=True)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
