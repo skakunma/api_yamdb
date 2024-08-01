@@ -7,10 +7,13 @@ from .utils import generate_verification_code
 from rest_framework.permissions import AllowAny
 from .permissions import IsAdminUser
 from django.shortcuts import get_object_or_404
-from rest_framework_simplejwt.tokens import AccessToken
+import jwt
 from django.core.mail import send_mail
 from rest_framework.permissions import IsAuthenticated
+import datetime
+from django.conf import settings
 from rest_framework.filters import SearchFilter
+import uuid
 
 
 class SignUp(generics.CreateAPIView):
@@ -74,13 +77,24 @@ class SignIn(generics.CreateAPIView):
                                      username=request.data.get('username'))
 
             if user.confirmation_code == request.data.get('confirmation_code'):
+                jti = str(uuid.uuid4())
 
-                access_token = AccessToken.for_user(user)
+                # Создание JWT токена с идентификатором пользователя, типом токена и сроком действия
+                payload = {
+                    'username': user.username,
+                    'token_type': 'access',  # Тип токена (например, "access")
+                    'jti': jti,  # Уникальный идентификатор токена
+                    'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1),  # Токен истекает через 1 час
+                    'iat': datetime.datetime.utcnow()  # Время создания токена
+                }
+
+                # Использование секретного ключа из настроек Django
+                encoded_jwt = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
 
                 return Response({
-                    'token': str(access_token)}, status=status.HTTP_200_OK)
+                    'token': encoded_jwt
+                }, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST)
-
 
 class ListUsers(generics.ListAPIView):
     model = User
