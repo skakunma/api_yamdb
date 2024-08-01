@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.tokens import AccessToken
 from django.core.mail import send_mail
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import SearchFilter
 
 
 class SignUp(generics.CreateAPIView):
@@ -82,9 +83,10 @@ class SignIn(generics.CreateAPIView):
 class ListUsers(generics.ListAPIView):
     model = User
     serializer_class = UserCreateSerializer
-    permission_classes = [
-        IsAdminUser,
-    ]
+    permission_classes = [IsAdminUser, ]
+    filter_backends = [SearchFilter]
+    search_fields = ['username']
+
     def get_queryset(self):
         return User.objects.all()
 

@@ -12,7 +12,6 @@ from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, ReviewSerializer,
                           TitleCreateSerializer, TitleReadOnlySerializer)
 from reviews.models import Category, Genre, Review, Title
-from rest_framework.response import Response
 
 
 class CategoryViewSet(ListCreateDestroyMixin):
