@@ -85,7 +85,7 @@ class SignIn(generics.CreateAPIView):
 class ListUsers(generics.ListAPIView):
     model = User
     serializer_class = UserCreateSerializer
-    permission_classes = [IsAdminUser,]
+    permission_classes = [IsAdminUser, ]
     filter_backends = [SearchFilter]
     search_fields = ['username']
 

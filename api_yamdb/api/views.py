@@ -1,7 +1,7 @@
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, viewsets, status
+from rest_framework import filters, viewsets
 from rest_framework.pagination import (LimitOffsetPagination,
                                        PageNumberPagination)
 from rest_framework.permissions import (IsAuthenticatedOrReadOnly,)
@@ -14,7 +14,6 @@ from .serializers import (CategorySerializer, CommentSerializer,
 from reviews.models import Category, Genre, Review, Title
 
 
-
 class CategoryViewSet(ListCreateDestroyMixin):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -22,7 +21,7 @@ class CategoryViewSet(ListCreateDestroyMixin):
     search_fields = ('name',)
     lookup_field = 'slug'
     pagination_class = PageNumberPagination
-    permission_classes = [AdminOrReadOnly,]
+    permission_classes = [AdminOrReadOnly, ]
 
 
 class GenreViewSet(ListCreateDestroyMixin):
@@ -32,7 +31,7 @@ class GenreViewSet(ListCreateDestroyMixin):
     search_fields = ('name',)
     lookup_field = 'slug'
     pagination_class = PageNumberPagination
-    permission_classes = [AdminOrReadOnly,]
+    permission_classes = [AdminOrReadOnly, ]
 
 
 class TitleViewSet(viewsets.ModelViewSet):
@@ -41,8 +40,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     filterset_fields = ('category__slug', 'genre__slug', 'name', 'year',)
     pagination_class = PageNumberPagination
     http_method_names = ['get', 'post', 'patch', 'delete']
-    permission_classes = [AdminOrReadOnly,]
-
+    permission_classes = [AdminOrReadOnly, ]
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
