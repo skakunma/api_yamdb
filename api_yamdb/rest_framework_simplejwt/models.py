@@ -93,7 +93,8 @@ class TokenUser:
     def has_perm(self, perm: str, obj: Optional[object] = None) -> bool:
         return False
 
-    def has_perms(self, perm_list: List[str], obj: Optional[object] = None) -> bool:
+    def has_perms(self,
+                  perm_list: List[str], obj: Optional[object] = None) -> bool:
         return False
 
     def has_module_perms(self, module: str) -> bool:
@@ -111,5 +112,6 @@ class TokenUser:
         return self.username
 
     def __getattr__(self, attr: str) -> Optional[Any]:
-        """This acts as a backup attribute getter for custom claims defined in Token serializers."""
+        """This acts as a backup attribute getter for custom claims
+          defined in Token serializers."""
         return self.token.get(attr, None)
