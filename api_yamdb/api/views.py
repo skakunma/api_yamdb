@@ -14,11 +14,12 @@ from .serializers import (CategorySerializer, CommentSerializer,
 from reviews.models import Category, Genre, Review, Title
 
 
+
 class CategoryViewSet(ListCreateDestroyMixin):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    filter_backends = (filters.SearchFilter, )
-    search_fields = ('name', )
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
     lookup_field = 'slug'
     pagination_class = PageNumberPagination
     permission_classes = [AdminOrReadOnly,]
@@ -27,8 +28,8 @@ class CategoryViewSet(ListCreateDestroyMixin):
 class GenreViewSet(ListCreateDestroyMixin):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    filter_backends = (filters.SearchFilter, )
-    search_fields = ('name', )
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
     lookup_field = 'slug'
     pagination_class = PageNumberPagination
     permission_classes = [AdminOrReadOnly,]
@@ -41,6 +42,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPagination
     http_method_names = ['get', 'post', 'patch', 'delete']
     permission_classes = [AdminOrReadOnly,]
+
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:

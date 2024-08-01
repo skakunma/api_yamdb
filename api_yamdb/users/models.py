@@ -38,7 +38,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         unique=True,
         validators=[RegexValidator(regex=r'^[\w.@+-]+$',
                                    message='Username должен быть формата'
-                                   '^[\w.@+-]+\Z')]
+                                   '^[w.@+-]+Z')]
     )
 
     first_name = models.CharField(max_length=150, blank=True)

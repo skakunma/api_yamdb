@@ -19,6 +19,7 @@ class SignUp(generics.CreateAPIView):
     permission_classes = [
         AllowAny,
     ]
+
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if (serializer.is_valid()
@@ -65,6 +66,7 @@ class SignIn(generics.CreateAPIView):
     permission_classes = [
         AllowAny,
     ]
+
     def post(self, request, *args, **kwargs):
         if (request.data.get('username')
                 and request.data.get('confirmation_code')):
@@ -83,7 +85,7 @@ class SignIn(generics.CreateAPIView):
 class ListUsers(generics.ListAPIView):
     model = User
     serializer_class = UserCreateSerializer
-    permission_classes = [IsAdminUser, ]
+    permission_classes = [IsAdminUser,]
     filter_backends = [SearchFilter]
     search_fields = ['username']
 
@@ -96,7 +98,8 @@ class ListUsers(generics.ListAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserListSerializer
