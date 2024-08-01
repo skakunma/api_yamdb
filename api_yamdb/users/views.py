@@ -1,8 +1,9 @@
 from rest_framework import generics, status
 from .models import User
 from rest_framework.response import Response
-from .serializers import UserSignUpSerializer, UserSignInSerializer, UserListSerializer, UserCreateSerializer
-from .utils import generate_verification_code, send_verification_email
+from .serializers import (UserSignUpSerializer, UserSignInSerializer,
+                          UserListSerializer, UserCreateSerializer)
+from .utils import generate_verification_code
 from rest_framework.permissions import AllowAny
 from .permissions import IsAdminUser
 from django.shortcuts import get_object_or_404
@@ -19,31 +20,34 @@ class SignUp(generics.CreateAPIView):
     ]
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid() and serializer.validated_data.get('username') != 'me':
+        if (serializer.is_valid()
+                and serializer.validated_data.get('username') != 'me'):
             verification_code = generate_verification_code()
-
-            
-            # Отправка email с кодом подтверждения
             send_mail(
                 'Your Verification Code',
                 f'Your verification code is {verification_code}.',
-                'api_yamdb@mail.ru',  # Замените на ваш email отправителя
+                'api_yamdb@mail.ru',
                 [serializer.validated_data.get('email')],
                 fail_silently=False,
             )
             self.perform_create(serializer)
-            user = User.objects.get(username=serializer.validated_data.get('username'))
+            user = User.objects.get(
+                username=serializer.validated_data.get('username'))
             user.confirmation_code = verification_code
             user.save()
             headers = self.get_success_headers(serializer.data)
-            return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+            return Response(serializer.data, status=status.HTTP_200_OK,
+                            headers=headers)
 
-        if User.objects.filter(email=request.data.get('email')) and User.objects.filter(username=request.data.get('username')):
+        if (User.objects.filter(email=request.data.get('email'))
+                and User.objects.filter(
+                    username=request.data.get('username'))):
+
             verification_code = generate_verification_code()
             send_mail(
                 'Your Verification Code',
                 f'Your verification code is {verification_code}.',
-                'api_yamdb@mail.ru',  # Замените на ваш email отправителя
+                'api_yamdb@mail.ru',
                 [request.data.get('email')],
                 fail_silently=False,
             )
@@ -61,14 +65,17 @@ class SignIn(generics.CreateAPIView):
         AllowAny,
     ]
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if request.data.get('username') and request.data.get('confirmation_code'):
-            user = get_object_or_404(User, username=request.data.get('username'))
+        if (request.data.get('username')
+                and request.data.get('confirmation_code')):
+            user = get_object_or_404(User,
+                                     username=request.data.get('username'))
+
             if user.confirmation_code == request.data.get('confirmation_code'):
+
                 access_token = AccessToken.for_user(user)
+
                 return Response({
-                    'token': str(access_token),
-                }, status=status.HTTP_200_OK)
+                    'token': str(access_token)}, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -98,7 +105,8 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
         return self.partial_update(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
-        return Response({"detail": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return Response({"detail": "Method not allowed"},
+                        status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def delete(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
@@ -124,6 +132,5 @@ class UsersMe(generics.RetrieveUpdateAPIView):
         user = self.get_object()
         serializer = self.get_serializer(user, data=request_data, partial=True)
         serializer.is_valid(raise_exception=True)
-        serializer.save()  # Сохранение изменений
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
-

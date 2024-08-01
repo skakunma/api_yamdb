@@ -1,5 +1,6 @@
 from rest_framework.permissions import BasePermission
 
+
 class IsAdminUser(BasePermission):
     """
     Разрешение для проверки, является ли пользователь администратором.
