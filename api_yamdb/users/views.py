@@ -78,23 +78,23 @@ class SignIn(generics.CreateAPIView):
 
             if user.confirmation_code == request.data.get('confirmation_code'):
                 jti = str(uuid.uuid4())
-
-                # Создание JWT токена с идентификатором пользователя, типом токена и сроком действия
                 payload = {
                     'username': user.username,
-                    'token_type': 'access',  # Тип токена (например, "access")
-                    'jti': jti,  # Уникальный идентификатор токена
-                    'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1),  # Токен истекает через 1 час
+                    'token_type': 'access',
+                    'jti': jti,
+                    'exp': datetime.datetime.utcnow() + datetime.timedelta(
+                        hours=1),
                     'iat': datetime.datetime.utcnow()  # Время создания токена
                 }
 
-                # Использование секретного ключа из настроек Django
-                encoded_jwt = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
+                encoded_jwt = jwt.encode(payload, settings.SECRET_KEY,
+                                         algorithm='HS256')
 
                 return Response({
                     'token': encoded_jwt
                 }, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class ListUsers(generics.ListAPIView):
     model = User

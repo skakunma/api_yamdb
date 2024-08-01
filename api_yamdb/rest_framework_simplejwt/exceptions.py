@@ -22,10 +22,12 @@ class DetailDictMixin:
         code: Optional[str] = None,
     ) -> None:
         """
-        Builds a detail dictionary for the error to give more information to API
+        Builds a detail dictionary for
+        the error to give more information to API
         users.
         """
-        detail_dict = {"detail": self.default_detail, "code": self.default_code}
+        detail_dict = {"detail": self.default_detail,
+                       "code": self.default_code}
 
         if isinstance(detail, dict):
             detail_dict.update(detail)

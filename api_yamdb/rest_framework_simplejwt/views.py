@@ -20,7 +20,8 @@ class TokenViewBase(generics.GenericAPIView):
 
     def get_serializer_class(self) -> Serializer:
         """
-        If serializer_class is set, use it directly. Otherwise get the class from settings.
+        If serializer_class is set, use it directly.
+        Otherwise get the class from settings.
         """
 
         if self.serializer_class:

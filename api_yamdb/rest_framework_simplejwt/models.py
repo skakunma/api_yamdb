@@ -15,9 +15,9 @@ class TokenUser:
     A dummy user class modeled after django.contrib.auth.models.AnonymousUser.
     Used in conjunction with the `JWTStatelessUserAuthentication` backend to
     implement single sign-on functionality across services which share the same
-    secret key.  `JWTStatelessUserAuthentication` will return an instance of this
-    class instead of a `User` model instance.  Instances of this class act as
-    stateless user objects which are backed by validated tokens.
+    secret key.  `JWTStatelessUserAuthentication` will return an instance of
+    this class instead of a `User` model instance.  Instances of this class
+    act as stateless user objects which are backed by validated tokens.
     """
 
     # User is always active since Simple JWT will never issue a token for an

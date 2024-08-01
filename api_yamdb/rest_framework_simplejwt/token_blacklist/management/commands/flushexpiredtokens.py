@@ -9,4 +9,5 @@ class Command(BaseCommand):
     help = "Flushes any expired tokens in the outstanding token list"
 
     def handle(self, *args, **kwargs) -> None:
-        OutstandingToken.objects.filter(expires_at__lte=aware_utcnow()).delete()
+        OutstandingToken.objects.filter(
+            expires_at__lte=aware_utcnow()).delete()

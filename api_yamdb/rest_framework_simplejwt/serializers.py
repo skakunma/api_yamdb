@@ -32,13 +32,15 @@ class TokenObtainSerializer(serializers.Serializer):
     token_class: Optional[Type[Token]] = None
 
     default_error_messages = {
-        "no_active_account": _("No active account found with the given credentials")
+        "no_active_account": _("No active account"
+                               "found with the given credentials")
     }
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-        self.fields[self.username_field] = serializers.CharField(write_only=True)
+        self.fields[self.username_field] = serializers.CharField(
+            write_only=True)
         self.fields["password"] = PasswordField()
 
     def validate(self, attrs: Dict[str, Any]) -> Dict[Any, Any]:
@@ -154,7 +156,8 @@ class TokenVerifySerializer(serializers.Serializer):
 
         if (
             api_settings.BLACKLIST_AFTER_ROTATION
-            and "rest_framework_simplejwt.token_blacklist" in settings.INSTALLED_APPS
+            and "rest_framework_simplejwt.token_blacklist"
+            in settings.INSTALLED_APPS
         ):
             jti = token.get(api_settings.JTI_CLAIM)
             if BlacklistedToken.objects.filter(token__jti=jti).exists():

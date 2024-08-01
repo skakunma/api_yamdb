@@ -61,7 +61,8 @@ class TokenBackend:
 
     def _validate_algorithm(self, algorithm: str) -> None:
         """
-        Ensure that the nominated algorithm is recognized, and that cryptography is installed for those
+        Ensure that the nominated algorithm is recognized, and that
+        cryptography is installed for those
         algorithms that require it
         """
         if algorithm not in ALLOWED_ALGORITHMS:
@@ -69,10 +70,12 @@ class TokenBackend:
                 format_lazy(_("Unrecognized algorithm type '{}'"), algorithm)
             )
 
-        if algorithm in algorithms.requires_cryptography and not algorithms.has_crypto:
+        if (algorithm in algorithms.requires_cryptography
+                and not algorithms.has_crypto):
             raise TokenBackendError(
                 format_lazy(
-                    _("You must have cryptography installed to use {}."), algorithm
+                    _("You must have cryptography installed to use {}."),
+                    algorithm
                 )
             )
 
@@ -87,7 +90,8 @@ class TokenBackend:
             raise TokenBackendError(
                 format_lazy(
                     _(
-                        "Unrecognized type '{}', 'leeway' must be of type int, float or timedelta."
+                        "Unrecognized type '{}', 'leeway' must be of type int,"
+                        "float or timedelta."
                     ),
                     type(self.leeway),
                 )
@@ -101,7 +105,8 @@ class TokenBackend:
             try:
                 return self.jwks_client.get_signing_key_from_jwt(token).key
             except PyJWKClientError as ex:
-                raise TokenBackendError(_("Token is invalid or expired")) from ex
+                raise TokenBackendError(_(
+                    "Token is invalid or expired")) from ex
 
         return self.verifying_key
 

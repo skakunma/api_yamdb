@@ -46,9 +46,10 @@ class OutstandingTokenAdmin(admin.ModelAdmin):
     def has_change_permission(
         self, request: Request, obj: Optional[object] = None
     ) -> bool:
-        return request.method in ["GET", "HEAD"] and super().has_change_permission(
+        return (request.method in ["GET", "HEAD"]
+                and super().has_change_permission(
             request, obj
-        )
+        ))
 
 
 admin.site.register(OutstandingToken, OutstandingTokenAdmin)

@@ -34,7 +34,8 @@ class Token:
     token_type: Optional[str] = None
     lifetime: Optional[timedelta] = None
 
-    def __init__(self, token: Optional["Token"] = None, verify: bool = True) -> None:
+    def __init__(self, token: Optional["Token"] = None,
+                 verify: bool = True) -> None:
         """
         !!!! IMPORTANT !!!! MUST raise a TokenError with a user-facing error
         message if the given token is invalid, expired, or otherwise not safe
@@ -161,7 +162,8 @@ class Token:
 
         self.payload[claim] = datetime_to_epoch(from_time + lifetime)
 
-    def set_iat(self, claim: str = "iat", at_time: Optional[datetime] = None) -> None:
+    def set_iat(self, claim: str = "iat",
+                at_time: Optional[datetime] = None) -> None:
         """
         Updates the time at which the token was issued.
 
@@ -192,7 +194,8 @@ class Token:
         claim_time = datetime_from_epoch(claim_value)
         leeway = self.get_token_backend().get_leeway()
         if claim_time <= current_time - leeway:
-            raise TokenError(format_lazy(_("Token '{}' claim has expired"), claim))
+            raise TokenError(format_lazy(_("Token '{}' claim has expired"),
+                                         claim))
 
     @classmethod
     def for_user(cls, user: AuthUser) -> "Token":

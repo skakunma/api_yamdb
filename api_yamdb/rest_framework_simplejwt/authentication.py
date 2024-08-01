@@ -37,7 +37,8 @@ class JWTAuthentication(authentication.BaseAuthentication):
         super().__init__(*args, **kwargs)
         self.user_model = get_user_model()
 
-    def authenticate(self, request: Request) -> Optional[Tuple[AuthUser, Token]]:
+    def authenticate(self, request: Request) -> Optional[Tuple[AuthUser,
+                                                               Token]]:
         header = self.get_header(request)
         if header is None:
             return None
@@ -86,7 +87,8 @@ class JWTAuthentication(authentication.BaseAuthentication):
 
         if len(parts) != 2:
             raise AuthenticationFailed(
-                _("Authorization header must contain two space-delimited values"),
+                _("Authorization header must contain two"
+                  "space-delimited values"),
                 code="bad_authorization_header",
             )
 
@@ -124,22 +126,27 @@ class JWTAuthentication(authentication.BaseAuthentication):
         try:
             user_id = validated_token[api_settings.USER_ID_CLAIM]
         except KeyError:
-            raise InvalidToken(_("Token contained no recognizable user identification"))
+            raise InvalidToken(_("Token contained no recognizable"
+                                 "user identification"))
 
         try:
-            user = self.user_model.objects.get(**{api_settings.USER_ID_FIELD: user_id})
+            user = self.user_model.objects.get(
+                **{api_settings.USER_ID_FIELD: user_id})
         except self.user_model.DoesNotExist:
-            raise AuthenticationFailed(_("User not found"), code="user_not_found")
+            raise AuthenticationFailed(_("User not found"),
+                                       code="user_not_found")
 
         if not user.is_active:
-            raise AuthenticationFailed(_("User is inactive"), code="user_inactive")
+            raise AuthenticationFailed(_("User is inactive"),
+                                       code="user_inactive")
 
         if api_settings.CHECK_REVOKE_TOKEN:
             if validated_token.get(
                 api_settings.REVOKE_TOKEN_CLAIM
             ) != get_md5_hash_password(user.password):
                 raise AuthenticationFailed(
-                    _("The user's password has been changed."), code="password_changed"
+                    _("The user's password has been changed."),
+                    code="password_changed"
                 )
 
         return user
@@ -148,7 +155,8 @@ class JWTAuthentication(authentication.BaseAuthentication):
 class JWTStatelessUserAuthentication(JWTAuthentication):
     """
     An authentication plugin that authenticates requests through a JSON web
-    token provided in a request header without performing a database lookup to obtain a user instance.
+    token provided in a request header without performing a database lookup to
+    obtain a user instance.
     """
 
     def get_user(self, validated_token: Token) -> AuthUser:
@@ -159,7 +167,8 @@ class JWTStatelessUserAuthentication(JWTAuthentication):
         if api_settings.USER_ID_CLAIM not in validated_token:
             # The TokenUser class assumes tokens will have a recognizable user
             # identifier claim.
-            raise InvalidToken(_("Token contained no recognizable user identification"))
+            raise InvalidToken(_("Token contained no recognizable"
+                                 "user identification"))
 
         return api_settings.TOKEN_USER_CLASS(validated_token)
 
