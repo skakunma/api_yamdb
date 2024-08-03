@@ -29,7 +29,15 @@ class TitleCreateSerializer(serializers.ModelSerializer):
         queryset=Genre.objects.all(),
         slug_field='slug',
         many=True,
+        allow_null=True,
+        allow_empty=True,
     )
+
+    def to_representation(self, instance):
+        return {
+            'category': instance.category,
+            'genre': instance.genre,
+        }
 
     class Meta:
         model = Title
