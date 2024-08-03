@@ -17,7 +17,7 @@ class UserSignInSerializer(serializers.ModelSerializer):
 class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        exclude = ('id', 'confirmation_code', 'password')
+        exclude = ("id", "confirmation_code", "password")
 
 
 class UserCreateSerializer(serializers.ModelSerializer):

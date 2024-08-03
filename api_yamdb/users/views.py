@@ -52,7 +52,7 @@ class SignUp(generics.CreateAPIView):
             send_mail(
                 'Your Verification Code',
                 f'Your verification code is {verification_code}.',
-                'api_yamdb@mail.ru',
+                settings.EMAIL,
                 [request.data.get('email')],
                 fail_silently=False,
             )
