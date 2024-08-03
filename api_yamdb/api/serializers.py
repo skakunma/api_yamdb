@@ -35,8 +35,10 @@ class TitleCreateSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         return {
-            'category': instance.category,
-            'genre': instance.genre,
+            'id': instance.id,
+            'name': instance.name,
+            'year': instance.year,
+            'description': instance.description,
         }
 
     class Meta:
